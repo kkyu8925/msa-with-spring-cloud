@@ -2,6 +2,7 @@ package com.example.userservice.controller;
 
 
 import com.example.userservice.dto.UserDTO;
+import com.example.userservice.jpa.UserEntity;
 import com.example.userservice.service.UserService;
 import com.example.userservice.vo.Greeting;
 import com.example.userservice.vo.RequestUser;
@@ -14,9 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user-service")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -40,6 +44,9 @@ public class UserController {
         return greeting.getMessage(); // @Value 사용으로 위에 줄 주석처리, 같은 코드
     }
 
+    /**
+     * 사용자 생성
+     */
     @PostMapping("/users")
     public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user) {
 
@@ -53,5 +60,32 @@ public class UserController {
         ResponseUser responseUser = mapper.map(userDTO, ResponseUser.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
+    }
+
+    /**
+     * 전체 사용자 조회
+     */
+    @GetMapping("/users")
+    public ResponseEntity<List<ResponseUser>> getUsers() {
+
+        Iterable<UserEntity> userList = userService.getUserByAll();
+
+        List<ResponseUser> users = new ArrayList<>();
+        userList.forEach(v -> users.add(new ModelMapper().map(v, ResponseUser.class)));
+
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
+    /**
+     * 사용자 조회
+     */
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ResponseUser> getUser(@PathVariable("userId") String userId) {
+
+        UserDTO userDTO = userService.getUserByUserId(userId);
+
+        ResponseUser returnValue = new ModelMapper().map(userDTO, ResponseUser.class);
+
+        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }
 }
