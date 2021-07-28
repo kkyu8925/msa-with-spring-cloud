@@ -15,6 +15,14 @@ spring:
     gateway:
       routes:
         - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
           uri: lb://USER-SERVICE # Load balancer, 유레카 서버에서 찾음
           predicates:
             - Path=/user-service/**
