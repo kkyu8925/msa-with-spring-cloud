@@ -38,9 +38,8 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userEntity);
 
-        UserDTO rUserDTO = mapper.map(userEntity, UserDTO.class);
-
-        return rUserDTO;
+        // mapper 객체로 UserEntity -> UserDTO 변환
+        return mapper.map(userEntity, UserDTO.class);
     }
 
     @Override

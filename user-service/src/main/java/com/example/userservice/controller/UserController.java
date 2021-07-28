@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/user-service")
 @RequiredArgsConstructor
@@ -31,11 +30,11 @@ public class UserController {
 
     @GetMapping("/health_check")
     public String status() {
-        return String.format("It's Working in User Service"
+        return "It's Working in User Service"
                 + ", port(local.server.port)=" + env.getProperty("local.server.port")
                 + ", port(server.port)=" + env.getProperty("server.port")
                 + ", token secret=" + env.getProperty("token.secret")
-                + ", token expiration time=" + env.getProperty("token.expiration_time"));
+                + ", token expiration time=" + env.getProperty("token.expiration_time");
     }
 
     @GetMapping("/welcome")
@@ -48,15 +47,16 @@ public class UserController {
      * 사용자 생성
      */
     @PostMapping("/users")
-    public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user) {
+    public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser requestUser) {
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        // mapper 객체로 user -> UserDTO 변환
-        UserDTO userDTO = mapper.map(user, UserDTO.class);
+        // mapper 객체로 RequestUser -> UserDTO 변환
+        UserDTO userDTO = mapper.map(requestUser, UserDTO.class);
         userService.createUser(userDTO);
 
+        // mapper 객체로 UserDTO -> ResponseUser 변환
         ResponseUser responseUser = mapper.map(userDTO, ResponseUser.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
@@ -84,8 +84,8 @@ public class UserController {
 
         UserDTO userDTO = userService.getUserByUserId(userId);
 
-        ResponseUser returnValue = new ModelMapper().map(userDTO, ResponseUser.class);
+        ResponseUser responseUser = new ModelMapper().map(userDTO, ResponseUser.class);
 
-        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
+        return ResponseEntity.status(HttpStatus.OK).body(responseUser);
     }
 }
