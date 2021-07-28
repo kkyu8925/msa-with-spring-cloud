@@ -19,9 +19,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final Environment env;
 
-    /**
-     * 권한
-     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -30,15 +27,15 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/**")
                 .hasIpAddress("172.30.1.56")
                 .and()
-                .addFilter(getAuthenticationFilter());
+                .addFilter(getAuthenticationFilter()); // AuthenticationFilter 필터 등록
 
         http.headers().frameOptions().disable();
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
-
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
-        authenticationFilter.setAuthenticationManager(authenticationManager());
+        // 필터 사용시 인스턴스 생성
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager(), userService, env);
+//        authenticationFilter.setAuthenticationManager(authenticationManager()); // 생성자로 받기때문에 주석처리
 
         return authenticationFilter;
     }
@@ -48,6 +45,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder); // 비밀번호 암호화
     }
 }
