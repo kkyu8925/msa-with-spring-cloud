@@ -31,3 +31,10 @@ greeting:
 token:
   expiration_time: 86400000 # 하루
   secret: user_token
+
+# actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, busrefresh, info, metrics, prometheus

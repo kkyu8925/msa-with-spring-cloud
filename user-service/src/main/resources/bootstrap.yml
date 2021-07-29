@@ -1,0 +1,9 @@
+# application.yml 보다 먼저 실행됨
+
+#spring:
+#  cloud:
+#    config:
+#      uri: http://127.0.0.1:8888 # config server port
+#      name: xxx # xxx.yml
+##  profiles:
+##    active: dev # xxx-dev.yml

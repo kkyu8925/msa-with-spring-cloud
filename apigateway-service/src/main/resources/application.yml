@@ -38,13 +38,13 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-#        - id: user-service
-#          uri: lb://USER-SERVICE
-#          predicates:
-#            - Path=/user-service/actuator/**
-#            - Method=GET,POST
-#          filters:
-#            - RemoveRequestHeader=Cookie
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
