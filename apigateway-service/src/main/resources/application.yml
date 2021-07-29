@@ -2,6 +2,8 @@ server:
   port: 8000
 
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     fetch-registry: true
     register-with-eureka: true
@@ -9,7 +11,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 token:
-  secret: user_token?
+  secret: user_token
 
 spring:
   application:
@@ -17,6 +19,10 @@ spring:
   cloud:
     gateway:
       routes:
+        #        - id: user-service
+        #          uri: lb://USER-SERVICE # Load balancer, 유레카 서버에서 찾음
+        #          predicates:
+        #            - Path=/user-service/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -26,9 +32,27 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: user-service
-          uri: lb://USER-SERVICE # Load balancer, 유레카 서버에서 찾음
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/users
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+#        - id: user-service
+#          uri: lb://USER-SERVICE
+#          predicates:
+#            - Path=/user-service/actuator/**
+#            - Method=GET,POST
+#          filters:
+#            - RemoveRequestHeader=Cookie
+        - id: user-service
+          uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - AuthorizationHeaderFilter
         - id: catalog-service
           uri: lb://CATALOG-SERVICE # Load balancer, 유레카 서버에서 찾음
           predicates:
