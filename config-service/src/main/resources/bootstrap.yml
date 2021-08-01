@@ -1,7 +1,8 @@
 encrypt:
-#  key: abcdefghijklmnopqrstuvwxyz0123456789 # 대칭키
-#  key-store: # 비대칭키
-#    location: file://${user.home}/Desktop/Work/keystore/apiEncryptionKey.jks # macOS
-#    location: file:///${user.home}/Desktop/Work/keystore/apiEncryptionKey.jks # window
-#    password: test1234
-#    alias: apiEncryptionKey
+  #  key: abcdefghijklmnopqrstuvwxyz0123456789 # 대칭키
+  key-store: # 비대칭키
+    #    location: file://${user.home}/Desktop/Work/keystore/apiEncryptionKey.jks # macOS
+    #    location: file:///${user.home}/Desktop/Work/keystore/apiEncryptionKey.jks # window
+    location: file:/apiEncryptionKey.jks # docker
+    password: test1234
+    alias: apiEncryptionKey
